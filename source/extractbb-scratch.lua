@@ -665,9 +665,10 @@ if output_format == "xbb" then
         insert(lines,
                ("PDFVersion: %d.%d")
                :format(pdf_major_version, pdf_minor_version))
+
+        insert(lines, ("Pages: %d"):format(num_pages))
     end
 
-    insert(lines, ("Pages: %d"):format(num_pages))
 end
 
 insert(lines, ("CreationDate: %s"):format(os.date("%c", SOURCE_DATE_EPOCH)))
@@ -678,7 +679,7 @@ local end_line   = "\n"
 
 local text = begin_line ..
              table.concat(lines, end_line .. begin_line) ..
-             end_line
+             end_line .. end_line
 
 -- Write the output text.
 output_file:write(text)

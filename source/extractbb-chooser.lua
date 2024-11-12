@@ -22,13 +22,19 @@ local DEFAULT = "wrapper"
 local env_choice = os.env["TEXLIVE_EXTRACTBB"]
 
 -- Map the choice names to file names.
+kpse.set_program_name("texlua", "extractbb")
 local choice_mapping = {
-    wrapper = kpse.find_file("extractbb-wrapper.lua", "texmfscripts", true),
-    scratch = kpse.find_file("extractbb-scratch.lua", "texmfscripts", true),
+    wrapper = kpse.find_file("extractbb-wrapper.lua", "lua", true),
+    scratch = kpse.find_file("extractbb-scratch.lua", "lua", true),
 }
 
 -- Choose the implementation to run.
 local choice = choice_mapping[env_choice] or choice_mapping[DEFAULT]
+
+if not choice then
+    print("No implementation of extractbb found. Exiting.")
+    os.exit(1)
+end
 
 -- And run it.
 dofile(choice)
