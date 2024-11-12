@@ -25,4 +25,3 @@ steps:
         - extractbb.ctan.zip
       api_key:
         from_secret: GITHUB_TOKEN
-      prerelease: true
