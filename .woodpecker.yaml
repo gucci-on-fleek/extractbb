@@ -1,0 +1,28 @@
+# extractbb-lua
+# https://github.com/gucci-on-fleek/extractbb
+# SPDX-License-Identifier: MPL-2.0+
+# SPDX-FileCopyrightText: 2024 Max Chernoff
+when:
+  - event: [push, tag, pull_request]
+    branch: master
+
+steps:
+  - name: Build
+    image: maxchernoff.ca/tex:latest
+    commands:
+      - set -euo pipefail
+      - export TEXMFHOME=$(realpath ./texmf)
+      - l3build check --show-log-on-error
+      - l3build bundle
+
+  - name: Release
+    when:
+      event: tag
+    image: woodpeckerci/plugin-release
+    settings:
+      files:
+        - extractbb.tds.zip
+        - extractbb.ctan.zip
+      api_key:
+        from_secret: GITHUB_TOKEN
+      prerelease: true
