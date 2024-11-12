@@ -75,7 +75,7 @@
 -- Pre-sandbox variables/constants
 local show_errors = true
 local SOURCE_DATE_EPOCH = tonumber(os.getenv("SOURCE_DATE_EPOCH"))
-local version = [=[extractbb.lua $Date: $ r$Revision: $]=]
+local version = "extractbb.lua v0.0.1 (2024-11-11)" --%%version %%dashdate
 
 -- Required for any kpathsea calls to work.
 kpse.set_program_name("texlua", "extractbb")
@@ -405,8 +405,14 @@ function process_arguments.O(script_arguments)
     output_file = io.stdout
 end
 
+-- Output format
+local output_format = "xbb"
+
+if script_arguments[0]:match("ebb") then
+    output_format = "bb"
+end
+
 -- > Output .bb  file used in DVIPDFM (default)
-local output_format = "bb"
 function process_arguments.m(script_arguments)
     output_format = "bb"
 end
