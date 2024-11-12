@@ -75,7 +75,7 @@
 -- Pre-sandbox variables/constants
 local show_errors = true
 local SOURCE_DATE_EPOCH = tonumber(os.getenv("SOURCE_DATE_EPOCH"))
-local version = "extractbb.lua v0.0.1 (2024-11-11)" --%%version %%dashdate
+local version = "extractbb.lua v0.0.2 (2024-11-12)" --%%version %%dashdate
 
 -- Required for any kpathsea calls to work.
 kpse.set_program_name("texlua", "extractbb")
