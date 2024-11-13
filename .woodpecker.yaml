@@ -9,6 +9,7 @@ when:
 steps:
   - name: Build
     image: maxchernoff.ca/tex:latest
+    pull: true
     commands:
       - set -euo pipefail
       - export TEXMFHOME=$(realpath ./texmf)
