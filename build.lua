@@ -64,7 +64,6 @@ function target_list.bundle.func()
     tdszip:close()
 
     ctanzip:add("./" .. tdszipname, tdszipname, true)
-    ctanzip:add("./" .. "DEPENDS.txt", "DEPENDS.txt", false)
     ctanzip:close()
 
     return 0
