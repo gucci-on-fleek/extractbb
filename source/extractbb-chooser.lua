@@ -38,5 +38,21 @@ if not choice then
     os.exit(1)
 end
 
+-- Now we need to make sure that the chosen implementation is in a “safe” path.
+if kpse.out_name_ok_silent_extended(choice) then
+    print("Refusing to run a writable script. Exiting.")
+    os.exit(1)
+end
+
+-- Make sure that the script is beside this one, just to be safe
+local split_dir_pattern = "^(.*)[/\\]([^/\\]-)$"
+local current_dir, current_name = arg[0]:match(split_dir_pattern)
+local choice_dir, choice_name = choice:match(split_dir_pattern)
+
+if current_dir ~= choice_dir then
+    print("Refusing to run a script from a different directory. Exiting.")
+    os.exit(1)
+end
+
 -- And run it.
 dofile(choice)

@@ -131,7 +131,7 @@ function runtest(name, engine, _, ext, _, is_expectation)
         os_concat .. os_setenv .. " TZ=UTC" ..
         os_concat .. os_setenv .. " TEXINPUTS=./texmf//" ..
         os_concat .. os_setenv .. " LUAINPUTS=./texmf//" ..
-        os_concat .. " ./source/extractbb-chooser.lua" .. extractbb_flags .. in_file ..
+        os_concat .. " ./texmf/scripts/extractbb/extractbb-chooser.lua" .. extractbb_flags .. in_file ..
         " > " .. out_file
     )
 
