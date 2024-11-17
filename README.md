@@ -10,6 +10,9 @@
 A reimplementation of
 [`extractbb`](https://texdoc.org/serve/extractbb/0), written in Lua.
 
+> [!WARNING]
+> This is a work in progress, and has not yet been audited for security.
+
 
 Variants
 --------
@@ -27,6 +30,14 @@ Currently, the script `extractbb` defaults to the `wrapper` variant, but
 you can manually select any specific variant by setting the
 `TEXLIVE_EXTRACTBB` environment variable to either `wrapper` or
 `scratch`.
+
+
+### Secret Developer Options
+
+If you set `TEXLIVE_EXTRACTBB` to the full path of an executable, it
+will run that directly. And if you set
+`TEXLIVE_EXTRACTBB_UNSAFE=unsafe`, then it will ignore some of the
+security checks.
 
 
 Support

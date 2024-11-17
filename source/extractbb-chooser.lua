@@ -23,6 +23,15 @@ local DEFAULT = "wrapper"
 -- Get the value of the environment variable that decides which version to run.
 local env_choice = os.env["TEXLIVE_EXTRACTBB"]
 
+-- If the environment variable is set to a file path, run that directly.
+local env_mode = lfs.attributes(env_choice or "", "mode")
+if (env_mode == "file") or (env_mode == "link") then
+    arg[0] = env_choice
+    table.insert(arg, 1, env_choice)
+    arg[-1] = nil
+    return os.exec(arg)
+end
+
 -- Map the choice names to file names.
 kpse.set_program_name("texlua", "extractbb")
 local choice_mapping = {
