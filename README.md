@@ -53,4 +53,4 @@ documentation is additionally licensed under [CC-BY-SA, version
 greater.
 
 ---
-_v0.0.5 (2024-11-17)_ <!--%%version %%dashdate-->
+_v0.0.6 (2024-11-17)_ <!--%%version %%dashdate-->

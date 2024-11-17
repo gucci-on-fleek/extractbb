@@ -34,6 +34,9 @@ function update_tag(name, content, version, date)
         date:gsub("-", "/") .. "%2%%%%slashdate"
     )
 
+    -- Argh!
+    os.execute("chmod a+x source/extractbb-chooser.lua")
+
     return content
 end
 
