@@ -64,4 +64,4 @@ documentation is additionally licensed under [CC-BY-SA, version
 greater.
 
 ---
-_v0.0.7 (2024-11-17)_ <!--%%version %%dashdate-->
+_v0.0.8 (2024-11-17)_ <!--%%version %%dashdate-->
