@@ -38,10 +38,14 @@ if not choice then
     os.exit(1)
 end
 
--- Now we need to make sure that the chosen implementation is in a “safe” path.
+-- Make sure that the script is not writable.
 if kpse.out_name_ok_silent_extended(choice) then
-    print("Refusing to run a writable script. Exiting.")
-    os.exit(1)
+    if os.env["TEXLIVE_EXTRACTBB_UNSAFE"] == "unsafe" then
+        -- If we're running in development mode, then we can allow this.
+    else
+        print("Refusing to run a writable script. Exiting.")
+        os.exit(1)
+    end
 end
 
 -- Make sure that the script is beside this one, just to be safe

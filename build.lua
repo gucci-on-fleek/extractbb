@@ -127,6 +127,7 @@ function runtest(name, engine, _, ext, _, is_expectation)
     local code = os.execute(
         os_setenv .. " TEXLIVE_EXTRACTBB=" .. texlive_extractbb ..
         os_concat .. os_setenv .. " SOURCE_DATE_EPOCH=0" ..
+        os_concat .. os_setenv .. " TEXLIVE_EXTRACTBB_UNSAFE=unsafe" ..
         os_concat .. os_setenv .. " TZ=UTC" ..
         os_concat .. os_setenv .. " TEXINPUTS=./texmf//" ..
         os_concat .. os_setenv .. " LUAINPUTS=./texmf//" ..
