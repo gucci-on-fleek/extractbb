@@ -66,7 +66,7 @@ function target_list.bundle.func()
 
     tdszip:close()
 
-    -- CTAN doesn't want this as per email from Petra
+    -- CTAN doesn't want this as per email from Petra and Karl
     -- ctanzip:add("./" .. tdszipname, tdszipname, true)
 
     ctanzip:close()
@@ -79,7 +79,10 @@ target_list.doc = {}
 target_list.doc.desc = "Builds the documentation"
 
 function target_list.doc.func()
-    print("Nothing to do!")
+    return run(
+        maindir .. "/documentation",
+        "groff -Tpdf -man extractbb.1 > extractbb.man1.pdf"
+    )
 end
 
 -- Tests

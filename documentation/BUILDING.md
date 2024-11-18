@@ -40,6 +40,16 @@ This is handled by the release script though, so you should **rarely**
 need to do this.
 
 
+Documentation
+-------------
+
+To build the documentation, you can run
+
+```sh
+$ l3build doc
+```
+
+
 Releasing
 ---------
 

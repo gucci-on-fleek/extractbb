@@ -59,7 +59,7 @@ Building
 --------
 
 Please see the file
-[`BUILDING.md`](https://github.com/gucci-on-fleek/extractbb/blob/master/BUILDING.md)
+[`documentation/BUILDING.md`](https://github.com/gucci-on-fleek/extractbb/blob/master/documentation/BUILDING.md)
 on GitHub.
 
 
