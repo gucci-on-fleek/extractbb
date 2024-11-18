@@ -79,10 +79,14 @@ target_list.doc = {}
 target_list.doc.desc = "Builds the documentation"
 
 function target_list.doc.func()
-    return run(
+    local code = run(
         maindir .. "/documentation",
         "groff -Tpdf -man extractbb.1 > extractbb.man1.pdf"
     )
+
+    if code ~= 0 then
+        error("Failure!")
+    end
 end
 
 -- Tests
@@ -129,7 +133,7 @@ function runtest(name, engine, _, ext, _, is_expectation)
     elseif engine == "xbb" then
         extractbb_flags = " -x -O "
     else
-        error()
+        error("Failure!")
     end
 
     local code = os.execute(
