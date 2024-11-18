@@ -78,4 +78,4 @@ these files are not distributed with the package, neither is this
 licence file.)
 
 ---
-_v1.0.2 (2024-11-18)_ <!--%%version %%dashdate-->
+_v1.0.3 (2024-11-18)_ <!--%%version %%dashdate-->
