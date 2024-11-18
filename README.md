@@ -10,9 +10,6 @@
 A reimplementation of
 [`extractbb`](https://texdoc.org/serve/extractbb/0), written in Lua.
 
-> [!WARNING]
-> This is a work in progress, and has not yet been audited for security.
-
 
 Variants
 --------
@@ -30,6 +27,10 @@ Currently, the script `extractbb` defaults to the `wrapper` variant, but
 you can manually select any specific variant by setting the
 `TEXLIVE_EXTRACTBB` environment variable to either `wrapper` or
 `scratch`.
+
+> [!WARNING]
+> The `scratch` variant is still in development and may be buggy or
+> insecure.
 
 
 ### Secret Developer Options
@@ -54,6 +55,14 @@ preference):
 3. By contacting the author directly at `tex@maxchernoff.ca`.
 
 
+Building
+--------
+
+Please see the file
+[`BUILDING.md`](https://github.com/gucci-on-fleek/extractbb/blob/master/BUILDING.md)
+on GitHub.
+
+
 Licence
 -------
 
@@ -62,6 +71,11 @@ Licence
 documentation is additionally licensed under [CC-BY-SA, version
 4.0](https://creativecommons.org/licenses/by-sa/4.0/legalcode) or
 greater.
+
+The test files have various licences, please see the file
+[`tests/LICENCE.md`](tests/LICENCE.md) for more information. (Since
+these files are not distributed with the package, neither is this
+licence file.)
 
 ---
 _v0.0.8 (2024-11-17)_ <!--%%version %%dashdate-->
