@@ -66,7 +66,9 @@ function target_list.bundle.func()
 
     tdszip:close()
 
-    ctanzip:add("./" .. tdszipname, tdszipname, true)
+    -- CTAN doesn't want this as per email from Petra
+    -- ctanzip:add("./" .. tdszipname, tdszipname, true)
+
     ctanzip:close()
 
     return 0
