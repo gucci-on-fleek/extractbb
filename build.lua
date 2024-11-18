@@ -87,6 +87,8 @@ function target_list.doc.func()
     if code ~= 0 then
         error("Failure!")
     end
+
+    return 0
 end
 
 -- Tests
