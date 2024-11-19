@@ -23,7 +23,7 @@ $ TEXLIVE_EXTRACTBB=scratch ./texmf/scripts/extractbb/extractbb.lua
 To run the full test suite, you can use `l3build`:
 
 ```sh
-$ l3build check --show-log-on-error
+$ l3build check --engine=ebb,xbb --show-log-on-error
 ```
 
 

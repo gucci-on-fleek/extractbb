@@ -89,22 +89,30 @@ kpse.set_program_name("texlua", "extractbb")
 -- questionable hack to load it manually. We do it inside of "pcall" since there
 -- are some exotic platforms where the "ffi" module is unsupported.
 pcall(function()
-    local ffi = package.loaded.ffi
+    local ffi
 
-    ffi.cdef[[
-        typedef struct lua_State lua_State;
-        typedef int (*lua_CFunction) (lua_State *L);
+    if img then
+        -- Ok, we're running under a recent LuaTeX that enables the "img"
+        -- library in "texlua" mode, so we can skip the FFI hack.
+        ffi = false
+    else
+        ffi = package.loaded.ffi
 
-        lua_State *Luas;
-        void luaL_requiref(lua_State *L, const char *modname,
-                            lua_CFunction openf, int glb);
-        int luaopen_img(lua_State * L);
+        ffi.cdef[[
+            typedef struct lua_State lua_State;
+            typedef int (*lua_CFunction) (lua_State *L);
 
-        int lua_only;
-    ]]
+            lua_State *Luas;
+            void luaL_requiref(lua_State *L, const char *modname,
+                                lua_CFunction openf, int glb);
+            int luaopen_img(lua_State * L);
 
-    -- Basic initialization
-    ffi.C.lua_only = 0
+            int lua_only;
+        ]]
+
+        -- Basic initialization
+        ffi.C.lua_only = 0
+    end
     tex.initialize()
 
     -- "tex" module
@@ -120,7 +128,9 @@ pcall(function()
     pdf.setminorversion(0)
 
     -- "img" module
-    ffi.C.luaL_requiref(ffi.C.Luas, "img", ffi.C.luaopen_img, 1)
+    if ffi then
+        ffi.C.luaL_requiref(ffi.C.Luas, "img", ffi.C.luaopen_img, 1)
+    end
 end)
 
 -- In case of failure, define an empty "img" table.
