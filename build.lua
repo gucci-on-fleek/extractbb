@@ -130,22 +130,36 @@ function runtest(name, engine, _, ext, _, is_expectation)
     end
 
     local extractbb_flags
-    if engine == "bb" then
+    if engine:match("ebb") then
         extractbb_flags = " -m -O "
-    elseif engine == "xbb" then
+    elseif engine:match("xbb") then
         extractbb_flags = " -x -O "
     else
         error("Failure!")
     end
 
+    local script_path = "./texmf/scripts/extractbb/extractbb.lua"
+
+    if engine:match("wine") then
+        if not in_file:match("%.pdf$") then
+            -- FFI doesn't work properly on Windows, so we can only process PDFs
+            local file = io.open(out_file, "w")
+            file:write("[SKIPPED]")
+            file:close()
+            return
+        end
+
+        script_path = 'wine64 "$(type -p texlua.exe)" ' .. script_path
+    end
+
     local code = os.execute(
         os_setenv .. " TEXLIVE_EXTRACTBB=" .. texlive_extractbb ..
-        os_concat .. os_setenv .. " SOURCE_DATE_EPOCH=0" ..
+        os_concat .. os_setenv .. " SOURCE_DATE_EPOCH=1000000" ..
         os_concat .. os_setenv .. " TEXLIVE_EXTRACTBB_UNSAFE=unsafe" ..
         os_concat .. os_setenv .. " TZ=UTC" ..
         os_concat .. os_setenv .. " TEXINPUTS=./texmf//" ..
         os_concat .. os_setenv .. " LUAINPUTS=./texmf//" ..
-        os_concat .. " ./texmf/scripts/extractbb/extractbb.lua" .. extractbb_flags .. in_file ..
+        os_concat .. " " .. script_path .. extractbb_flags .. in_file ..
         " > " .. out_file
     )
 
@@ -168,14 +182,20 @@ function runtest(name, engine, _, ext, _, is_expectation)
 end
 
 specialformats = { extractbb = {
-    bb = {
-        binary = "bb"
+    ebb = {
+        binary = "ebb"
     },
     xbb = {
         binary = "xbb"
     },
+    wine_ebb = {
+        binary = "wine_ebb"
+    },
+    wine_xbb = {
+        binary = "wine_xbb"
+    },
 }}
 
-checkengines = { "bb", "xbb" }
+checkengines = { "ebb", "xbb", "wine_ebb", "wine_xbb" }
 checkformat = "extractbb"
 forcecheckruns = false
