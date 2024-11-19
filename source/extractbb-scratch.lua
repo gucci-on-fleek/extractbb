@@ -333,6 +333,7 @@ _ENV = env
 -- Constants
 local BP_TO_SP    = 65781.76
 local IN_TO_BP    = 72
+local DATE_FORMAT = "%a %b %d %H:%M:%S %Y" -- "%c"
 
 -- Save often-used globals for a slight speed boost.
 local floor            = math.floor
@@ -687,7 +688,7 @@ if output_format == "xbb" then
 
 end
 
-insert(lines, ("CreationDate: %s"):format(os.date("%c", SOURCE_DATE_EPOCH)))
+insert(lines, ("CreationDate: %s"):format(os.date(DATE_FORMAT, SOURCE_DATE_EPOCH)))
 
 -- Create the output text.
 local begin_line = "%%"

@@ -141,14 +141,6 @@ function runtest(name, engine, _, ext, _, is_expectation)
     local script_path = "./texmf/scripts/extractbb/extractbb.lua"
 
     if engine:match("wine") then
-        if not in_file:match("%.pdf$") then
-            -- FFI doesn't work properly on Windows, so we can only process PDFs
-            local file = io.open(out_file, "w")
-            file:write("[SKIPPED]")
-            file:close()
-            return
-        end
-
         script_path = 'wine64 "$(type -p texlua.exe)" ' .. script_path
     end
 
