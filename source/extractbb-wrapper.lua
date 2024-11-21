@@ -230,7 +230,7 @@ for i = 1, #script_args do
 
     -- Show version information
     if this_arg:match("%-version") then
-        print("[Wrapped by extractbb.lua v1.0.4 (2024-11-18)]") --%%version %%dashdate
+        print("[Wrapped by extractbb.lua v1.0.5 (2024-11-21)]") --%%version %%dashdate
     end
 end
 
