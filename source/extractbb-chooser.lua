@@ -76,7 +76,12 @@ local current_dir, current_name = arg[0]:match(split_dir_pattern)
 local choice_dir, choice_name = choice:match(split_dir_pattern)
 
 if current_dir ~= choice_dir then
-    error("Refusing to run a script from a different directory.")
+    -- Resolve the symlinks and try again
+    current_dir = lfs.symlinkattributes(current_dir, "target")
+    choice_dir = lfs.symlinkattributes(choice_dir, "target")
+    if current_dir ~= choice_dir then
+        error("Refusing to run a script from a different directory.")
+    end
 end
 
 -- And run it.
