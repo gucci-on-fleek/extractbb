@@ -7,7 +7,7 @@
 -- A wrapper script to allow you to choose which implementation of extractbb to
 -- use. Should hopefully be replaced with the ``scratch'' file in TeX Live 2025.
 --
--- v1.0.6 (2024-11-21) %%version %%dashdate
+-- v1.0.7 (2024-11-21) %%version %%dashdate
 
 ---------------------
 --- Configuration ---
