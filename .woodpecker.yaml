@@ -13,8 +13,12 @@ steps:
     commands:
       - set -euo pipefail
       - export TEXMFHOME=$(realpath ./texmf)
-      - l3build check --show-log-on-error
-      - l3build doc
+      - l3build check --dirty --show-log-on-error --engine=ebb &
+      - l3build check --dirty --show-log-on-error --engine=xbb &
+      - l3build check --dirty --show-log-on-error --engine=wine_ebb &
+      - l3build check --dirty --show-log-on-error --engine=wine_xbb &
+      - l3build doc &
+      - wait
       - l3build bundle
 
   - name: Release
@@ -22,8 +26,9 @@ steps:
       event: tag
     image: woodpeckerci/plugin-release
     settings:
+      title: ./release.title
       files:
-        - extractbb.tds.zip
-        - extractbb.ctan.zip
+        - extractbb-*.tds.zip
+        - extractbb-*.ctan.zip
       api_key:
         from_secret: GITHUB_TOKEN

@@ -6,4 +6,5 @@
 *.zip
 build/
 nogit-*
+release.title
 !texmf/**

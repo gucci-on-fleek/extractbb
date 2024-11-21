@@ -5,6 +5,8 @@
 
 -- Initialization
 module = "extractbb"
+local version = "1.0.6" --%%version
+local date = "2024-11-21" --%%dashdate
 
 local orig_targets = target_list
 target_list = {}
@@ -46,10 +48,12 @@ target_list.bundle.desc = "Creates the package zipfiles"
 
 function target_list.bundle.func()
     local newzip = require "l3build-zip"
-    local tdszipname = module .. ".tds.zip"
+    local name = module .. "-" .. version
+    local tdszipname = name .. ".tds.zip"
+    local ctanzipname = name .. ".ctan.zip"
 
     local tdszip = newzip("./" .. tdszipname)
-    local ctanzip = newzip("./" .. module .. ".ctan.zip")
+    local ctanzip = newzip("./" .. ctanzipname)
 
     for _, path in ipairs(tree("texmf", "**/*.*")) do
         tdszip:add(
@@ -68,8 +72,11 @@ function target_list.bundle.func()
 
     -- CTAN doesn't want this as per email from Petra and Karl
     -- ctanzip:add("./" .. tdszipname, tdszipname, true)
-
     ctanzip:close()
+
+    local release_notes = io.open("release.title", "w")
+    release_notes:write(version .. " " .. date .. "\n")
+    release_notes:close()
 
     return 0
 end
