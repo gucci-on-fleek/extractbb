@@ -17,7 +17,7 @@ Variants
 There are two variants of `extractbb-lua`:
 
 - **`wrapper`**: A wrapper script around the original `xdvipdmfx`-based
-  `extractbb` that is used to fix a security vulernability in
+  `extractbb` that is used to fix a security vulnerability in
   `xdvipdfmx`.
 
 - **`scratch`**: A standalone implementation of `extractbb`, written in
