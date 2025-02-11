@@ -60,10 +60,6 @@
 --
 --   * This script has not been audited or reviewed by anyone other than myself.
 --
---   * Using the "ffi" module to load the "img" library is technically undefined
---     behaviour, and as such may potentially lead to unforeseen security
---     issues.
---
 --   * The underlying LuaTeX modules may themselves have security
 --     vulnerabilities, which would be inherited by this script.
 
@@ -80,63 +76,26 @@ local version = "extractbb.lua v1.0.7 (2024-11-21)" --%%version %%dashdate
 -- Required for any kpathsea calls to work.
 kpse.set_program_name("texlua", "extractbb")
 
-
---------------------------
---- Questionable Hacks ---
---------------------------
-
--- LuaTeX doesn't load the "img" library in "texlua" mode, so we need this
--- questionable hack to load it manually. We do it inside of "pcall" since there
--- are some exotic platforms where the "ffi" module is unsupported.
-pcall(function()
-    local ffi
-
-    if img then
-        -- Ok, we're running under a recent LuaTeX that enables the "img"
-        -- library in "texlua" mode, so we can skip the FFI hack.
-        ffi = false
-    else
-        ffi = package.loaded.ffi
-
-        ffi.cdef[[
-            typedef struct lua_State lua_State;
-            typedef int (*lua_CFunction) (lua_State *L);
-
-            lua_State *Luas;
-            void luaL_requiref(lua_State *L, const char *modname,
-                                lua_CFunction openf, int glb);
-            int luaopen_img(lua_State * L);
-
-            int lua_only;
-        ]]
-
-        -- Basic initialization
-        ffi.C.lua_only = 0
-    end
-    tex.initialize()
-
-    -- "tex" module
-    _G.tex = package.loaded.tex
-    tex.enableprimitives("", tex.extraprimitives())
-    tex.outputmode = 1
-    tex.interactionmode = 0
-
-    -- "pdf" module
-    _G.pdf = package.loaded.pdf
-    pdf.setignoreunknownimages(1)
-    pdf.setmajorversion(2)
-    pdf.setminorversion(0)
-
-    -- "img" module
-    if ffi then
-        ffi.C.luaL_requiref(ffi.C.Luas, "img", ffi.C.luaopen_img, 1)
-    end
-end)
-
--- In case of failure, define an empty "img" table.
-if not img then
-    _G.img = {}
+-- Required to use the "img" module from texlua, but only works for LuaTeX
+-- versions >= 1.21.0.
+if not status.development_id >= 7661 then
+    error("LuaTeX version is too old, cannot proceed.")
 end
+texconfig.texlua_img = true
+
+-- We need to set \outputmode to PDF to be able to use most of the "img" module
+-- functions, but to set \outputmode, we need to initialize the TeX interpreter.
+tex.initialize()
+_G.tex = package.loaded.tex
+tex.enableprimitives("", tex.extraprimitives())
+tex.outputmode = 1
+tex.interactionmode = 0
+
+-- "pdf" module
+_G.pdf = package.loaded.pdf
+pdf.setignoreunknownimages(1)
+pdf.setmajorversion(2)
+pdf.setminorversion(0)
 
 
 ------------------
