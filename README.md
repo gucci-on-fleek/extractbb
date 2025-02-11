@@ -1,7 +1,7 @@
 <!-- extractbb-lua
      https://github.com/gucci-on-fleek/extractbb
      SPDX-License-Identifier: MPL-2.0+ OR CC-BY-SA-4.0+
-     SPDX-FileCopyrightText: 2024 Max Chernoff
+     SPDX-FileCopyrightText: 2024--2025 Max Chernoff
 -->
 
 `extractbb-lua`
@@ -48,4 +48,4 @@ these files are not distributed with the package, neither is this
 licence file.)
 
 ---
-_v1.0.7 (2024-11-21)_ <!--%%version %%dashdate-->
+_v1.1.0 (2025-02-11)_ <!--%%version %%dashdate-->

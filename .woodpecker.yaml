@@ -1,7 +1,7 @@
 # extractbb-lua
 # https://github.com/gucci-on-fleek/extractbb
 # SPDX-License-Identifier: MPL-2.0+
-# SPDX-FileCopyrightText: 2024 Max Chernoff
+# SPDX-FileCopyrightText: 2024--2025 Max Chernoff
 when:
   - event: [push, tag, pull_request]
     branch: master

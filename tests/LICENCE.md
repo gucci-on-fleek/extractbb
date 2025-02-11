@@ -1,7 +1,7 @@
 <!-- extractbb-lua
      https://github.com/gucci-on-fleek/extractbb
      SPDX-License-Identifier: MPL-2.0+ OR CC-BY-SA-4.0+
-     SPDX-FileCopyrightText: 2024 Max Chernoff
+     SPDX-FileCopyrightText: 2024--2025 Max Chernoff
 -->
 
 Test file licences

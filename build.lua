@@ -1,12 +1,12 @@
 -- extractbb-lua
 -- https://github.com/gucci-on-fleek/extractbb
 -- SPDX-License-Identifier: MPL-2.0+
--- SPDX-FileCopyrightText: 2024 Max Chernoff
+-- SPDX-FileCopyrightText: 2024--2025 Max Chernoff
 
 -- Initialization
 module = "extractbb"
-local version = "1.0.6" --%%version
-local date = "2024-11-21" --%%dashdate
+local version = "1.1.0" --%%version
+local date = "2024--2025-02-11" --%%dashdate
 
 local orig_targets = target_list
 target_list = {}

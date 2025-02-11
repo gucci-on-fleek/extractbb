@@ -2,7 +2,7 @@
 -- extractbb-lua
 -- https://github.com/gucci-on-fleek/extractbb
 -- SPDX-License-Identifier: MPL-2.0+
--- SPDX-FileCopyrightText: 2024 Max Chernoff
+-- SPDX-FileCopyrightText: 2024--2025 Max Chernoff
 --
 -- Inclusion Methods
 -- =================
@@ -71,7 +71,7 @@
 -- Pre-sandbox variables/constants
 local show_errors = true
 local SOURCE_DATE_EPOCH = tonumber(os.getenv("SOURCE_DATE_EPOCH"))
-local version = "extractbb.lua v1.0.7 (2024-11-21)" --%%version %%dashdate
+local version = "extractbb.lua v1.1.0 (2025-02-11)" --%%version %%dashdate
 
 -- Required for any kpathsea calls to work.
 kpse.set_program_name("texlua", "extractbb")
