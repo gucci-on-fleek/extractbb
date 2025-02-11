@@ -1,1 +1,1 @@
-../../../source/extractbb-chooser.lua
+../../../source/extractbb.lua

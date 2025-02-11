@@ -78,7 +78,7 @@ kpse.set_program_name("texlua", "extractbb")
 
 -- Required to use the "img" module from texlua, but only works for LuaTeX
 -- versions >= 1.21.0.
-if not status.development_id >= 7661 then
+if not (status.development_id >= 7661) then
     error("LuaTeX version is too old, cannot proceed.")
 end
 texconfig.texlua_img = true

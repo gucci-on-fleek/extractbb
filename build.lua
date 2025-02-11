@@ -37,7 +37,7 @@ function update_tag(name, content, version, date)
     )
 
     -- Argh!
-    os.execute("chmod a+x source/extractbb-chooser.lua")
+    os.execute("chmod a+x source/extractbb.lua")
 
     return content
 end
@@ -129,13 +129,6 @@ function runtest(name, engine, _, ext, _, is_expectation)
     local in_file = testfiledir .. name .. ext
     local out_file = testdir .. "/" .. name .. "." .. engine
 
-    local texlive_extractbb
-    if is_expectation then
-        texlive_extractbb = "wrapper"
-    else
-        texlive_extractbb = "scratch"
-    end
-
     local extractbb_flags
     if engine:match("ebb") then
         extractbb_flags = " -m -O "
@@ -151,15 +144,18 @@ function runtest(name, engine, _, ext, _, is_expectation)
         script_path = 'wine64 "$(type -p texlua.exe)" ' .. script_path
     end
 
-    local code = os.execute(
-        os_setenv .. " TEXLIVE_EXTRACTBB=" .. texlive_extractbb ..
-        os_concat .. os_setenv .. " SOURCE_DATE_EPOCH=1000000" ..
-        os_concat .. os_setenv .. " TEXLIVE_EXTRACTBB_UNSAFE=unsafe" ..
-        os_concat .. os_setenv .. " TZ=UTC" ..
-        os_concat .. os_setenv .. " TEXINPUTS=./texmf//" ..
-        os_concat .. os_setenv .. " LUAINPUTS=./texmf//" ..
-        os_concat .. " " .. script_path .. extractbb_flags .. in_file ..
-        " > " .. out_file
+    os.env["SOURCE_DATE_EPOCH"] = "1000000"
+    os.env["TZ"] = "UTC"
+    os.env["TEXINPUTS"] = "./texmf//"
+    os.env["LUAINPUTS"] = "./texmf//"
+
+    local code = os.spawn(
+        {
+            "sh", "-c",
+            script_path .. extractbb_flags .. in_file ..
+            " > " .. out_file,
+        },
+        os.env
     )
 
     -- Post-process

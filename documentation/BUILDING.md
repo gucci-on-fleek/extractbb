@@ -15,9 +15,7 @@ looks something like:
 
 ```sh
 $ export TEXMFHOME=./texmf/
-$ export TEXLIVE_EXTRACTBB_UNSAFE=unsafe
-$ TEXLIVE_EXTRACTBB=scratch ./texmf/scripts/extractbb/extractbb.lua
--O ./tests/example-image-a-pdf.pdf
+$ ./texmf/scripts/extractbb/extractbb.lua -O ./tests/example-image-a-pdf.pdf
 ```
 
 To run the full test suite, you can use `l3build`:

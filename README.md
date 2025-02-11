@@ -11,36 +11,6 @@ A reimplementation of
 [`extractbb`](https://texdoc.org/serve/extractbb/0), written in Lua.
 
 
-Variants
---------
-
-There are two variants of `extractbb-lua`:
-
-- **`wrapper`**: A wrapper script around the original `xdvipdmfx`-based
-  `extractbb` that is used to fix a security vulnerability in
-  `xdvipdfmx`.
-
-- **`scratch`**: A standalone implementation of `extractbb`, written in
-  Lua from scratch, with no dependencies on `xdvipdfmx`.
-
-Currently, the script `extractbb` defaults to the `wrapper` variant, but
-you can manually select any specific variant by setting the
-`TEXLIVE_EXTRACTBB` environment variable to either `wrapper` or
-`scratch`.
-
-> [!WARNING]
-> The `scratch` variant is still in development and may be buggy or
-> insecure.
-
-
-### Secret Developer Options
-
-If you set `TEXLIVE_EXTRACTBB` to the full path of an executable, it
-will run that directly. And if you set
-`TEXLIVE_EXTRACTBB_UNSAFE=unsafe`, then it will ignore some of the
-security checks.
-
-
 Support
 -------
 
