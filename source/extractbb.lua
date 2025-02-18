@@ -1,20 +1,14 @@
 #!/usr/bin/env texlua
--- extractbb-lua
--- https://github.com/gucci-on-fleek/extractbb
--- SPDX-License-Identifier: MPL-2.0+
--- SPDX-FileCopyrightText: 2024--2025 Max Chernoff
+-- extractbb-lua https://github.com/gucci-on-fleek/extractbb
+-- SPDX-License-Identifier: MPL-2.0+ SPDX-FileCopyrightText: 2024--2025 Max
+-- Chernoff
 --
 -- Inclusion Methods
 -- =================
 --
--- This script can use two different methods to extract bounding boxes from
--- images: the "img" module and the "pdfe" module. The "img" module will be
--- automatically selected in most cases and supports all image types that are
--- supported by the original "extractbb" program. If and only if the "img"
--- module fails to load, the "pdfe" module will be used as a fallback. However,
--- the "pdfe" module only supports PDF files. Both modules are built in to the
--- LuaTeX binaries, however due to some technical issues, the "img" module may
--- fail to load on some more exotic platforms.
+-- This script uses the LuaTeX "img" module to extract bounding boxes from
+-- images since this supports all image types that are supported by the original
+-- "extractbb" program.
 --
 --
 -- Compatibility
@@ -23,16 +17,14 @@
 -- Based off of my testing, this Lua script is 100% compatible with the original
 -- C-based "extractbb" program, with the following exceptions:
 --
---   * When running in "img" mode, the PDF version is always reported as "1.5".
+--   * The PDF version is always reported as "1.5".
 --
---   * When running in "img" mode, if the requested bounding box is not found,
---     the script will fallback to the Crop box or the Media box, instead of
---     following the original fallback order. (In practice, almost all PDFs set
---     all their bounding boxes equal to each other, and even if the boxes are
---     set to different values, the script will still return the requested box,
---     provided that it is set in the PDF.)
---
---   * When running in "pdfe" mode, only PDF files are supported.
+--   * If the requested bounding box is not found, the script will fallback to
+--     the Crop box or the Media box, instead of following the original fallback
+--     order. (In practice, almost all PDFs set all their bounding boxes equal
+--     to each other, and even if the boxes are set to different values, the
+--     script will still return the requested box, provided that it is set in
+--     the PDF.)
 --
 -- All of these issues are very unlikely to affect any real-world documents.
 --
@@ -110,7 +102,6 @@ local env = {
     math     = math,
     os       = { date = os.date, exit = os.exit, },
     pairs    = pairs,
-    pdfe     = pdfe,
     print    = print,
     select   = select,
     table    = table,
@@ -131,7 +122,6 @@ do
     local lfs_attributes   = lfs.attributes
     local os_exit          = os.exit
     local os_setenv        = os.setenv
-    local pdfe_open        = pdfe.open
     local select           = select
     local tostring         = tostring
 
@@ -248,11 +238,6 @@ do
         return file
     end
 
-    -- Open an PDF file.
-    function env.pdfe.open(file_name)
-        local file_path = resolve_input_name(file_name)
-        return pdfe_open(file_path)
-    end
 
     -- Open an image file.
     function env.open_image(file_name, page, box)
@@ -263,10 +248,6 @@ do
             page     = page,
             pagebox  = box,
         }
-    end
-
-    if not img_scan then
-        env.open_image = false
     end
 end
 
@@ -448,35 +429,6 @@ if not input_name then
     error("No input file specified.")
 end
 
--- Validate the bounding box type. We need this rather crazy fallback scheme
--- to match the behaviour of "extractbb".
-local bbox_orders = {}
-bbox_orders.mediabox = {
-    { img = "media", pdfe = "MediaBox" },
-}
-bbox_orders.cropbox = {
-    { img = "crop", pdfe = "CropBox" }, unpack(bbox_orders.mediabox)
-}
-bbox_orders.artbox = {
-    { img = "art", pdfe = "ArtBox" }, unpack(bbox_orders.cropbox)
-}
-bbox_orders.trimbox = {
-    { img = "trim", pdfe = "TrimBox" }, unpack(bbox_orders.artbox)
-}
-bbox_orders.bleedbox = {
-    { img = "bleed", pdfe = "BleedBox" }, unpack(bbox_orders.trimbox)
-}
-bbox_orders.auto = {
-    bbox_orders.cropbox[1], bbox_orders.artbox[1], bbox_orders.trimbox[1],
-    bbox_orders.bleedbox[1], bbox_orders.mediabox[1],
-}
-
-local bbox_order = bbox_orders[bbox_option]
-
-if not bbox_order then
-    error("Invalid PDF box type:", bbox_option)
-end
-
 -- Set the default pixel resolution.
 local default_dpi
 if output_format == "xbb" then
@@ -499,117 +451,65 @@ end
 --- Image Processing ---
 ------------------------
 
-local x_min, y_min, x_max, y_max
-local num_pages, image_type
-local pdf_major_version, pdf_minor_version
+-- Check the number of pages.
+local image = open_image(input_name)
+local num_pages = image.pages
 
-if open_image then
-    -- Check the number of pages.
-    local image = open_image(input_name)
-    num_pages = image.pages
-
-    if page_number > num_pages then
-        error("Invalid page number:", page_number)
-    end
-
-    -- Open the image to the specified page and bounding box. If the requested
-    -- bounding box is not available, LuaTeX will fall back to the crop box
-    -- or the media box.
-    image = open_image(input_name, page_number, bbox_order[1].img)
-
-    if not image then
-        error("Cannot open image:", input_name)
-    end
-
-    -- Get the image metadata.
-    image_type   = image.imagetype
-    local bounding_box = image.bbox
-
-    if not bounding_box then
-        error("Cannot get bounding box:", page_number)
-    end
-
-    local x_resolution = image.xres
-    local y_resolution = image.yres
-
-    if (x_resolution or 0) == 0 then
-        x_resolution = default_dpi
-    end
-
-    if (y_resolution or 0) == 0 then
-        y_resolution = default_dpi
-    end
-
-    -- Convert the bounding box to PostScript points.
-    for i, dimen in ipairs(bounding_box) do
-        if image_type == "pdf" then
-            dimen = dimen / BP_TO_SP
-        else
-            if i % 2 == 1 then
-                dimen = dimen / x_resolution * IN_TO_BP
-            else
-                dimen = dimen / y_resolution * IN_TO_BP
-            end
-        end
-
-        bounding_box[i] = dimen
-    end
-
-    -- Save the bounding box.
-    x_min, y_min, x_max, y_max = unpack(bounding_box)
-
-    -- We can't get the PDF version with the "img" library, so we'll just
-    -- pretend that it's v1.5 (which supports most features).
-    pdf_major_version = 1
-    pdf_minor_version = 5
-else
-    -- Fallback to PDFs only.
-    image_type = "pdf"
-    local document = pdfe.open(input_name)
-
-    if pdfe.getstatus(document) ~= 0 then
-        error("Cannot open PDF file:", input_name)
-    end
-
-    -- Check the number of pages.
-    num_pages = pdfe.getnofpages(document)
-
-    if type(num_pages) ~= "number" then
-        error("Invalid number of pages:", num_pages)
-    end
-
-    if page_number > num_pages then
-        error("Invalid page number:", page_number)
-    end
-
-    -- Get the page.
-    local page = pdfe.getpage(document, page_number)
-
-    if not page then
-        error("Cannot get page:", page_number)
-    end
-
-    -- Get the bounding box. Here, we check the boxes in the exact same order
-    -- that "extractbb" does.
-    local bounding_box
-    for _, bbox in ipairs(bbox_order) do
-        bounding_box = pdfe.getbox(page, bbox.pdfe)
-
-        if bounding_box then
-            break
-        end
-    end
-
-    if not bounding_box then
-        error("Cannot get bounding box:", page_number)
-    end
-
-    -- Save the bounding box.
-    x_min, y_min, x_max, y_max = unpack(bounding_box)
-
-    -- Get the PDF version.
-    pdf_major_version, pdf_minor_version = pdfe.getversion(document)
+if page_number > num_pages then
+    error("Invalid page number:", page_number)
 end
+
+-- Open the image to the specified page and bounding box. If the requested
+-- bounding box is not available, LuaTeX will fall back to the crop box
+-- or the media box.
+image = open_image(input_name, page_number, bbox_option:gsub("box$", ""))
+
+if not image then
+    error("Cannot open image:", input_name)
+end
+
+-- Get the image metadata.
+local image_type   = image.imagetype
+local bounding_box = image.bbox
+
+if not bounding_box then
+    error("Cannot get bounding box:", page_number)
+end
+
+local x_resolution = image.xres
+local y_resolution = image.yres
+
+if (x_resolution or 0) == 0 then
+    x_resolution = default_dpi
+end
+
+if (y_resolution or 0) == 0 then
+    y_resolution = default_dpi
+end
+
+-- Convert the bounding box to PostScript points.
+for i, dimen in ipairs(bounding_box) do
+    if image_type == "pdf" then
+        dimen = dimen / BP_TO_SP
+    else
+        if i % 2 == 1 then
+            dimen = dimen / x_resolution * IN_TO_BP
+        else
+            dimen = dimen / y_resolution * IN_TO_BP
+        end
+    end
+
+    bounding_box[i] = dimen
+end
+
+-- Save the bounding box.
+local x_min, y_min, x_max, y_max = unpack(bounding_box)
+
+-- We can't get the PDF version with the "img" library, so we'll just
+-- pretend that it's v1.5 (which supports most features).
+local pdf_major_version = 1
+local pdf_minor_version = 5
+
 
 -- Validate the bounding box.
 for _, dimen in ipairs { x_min, y_min, x_max, y_max } do
