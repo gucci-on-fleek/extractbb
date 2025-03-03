@@ -164,6 +164,7 @@ do
     -- Check the input paths.
     local function resolve_input_name(file_name)
         local file_path = find_file(file_name, "graphic/figure", true)
+
         if not file_path then
             error("Cannot find input file:", file_name)
         end
@@ -201,7 +202,7 @@ do
         end
 
         -- We shouldn't allow files with weird characters in their names.
-        if name:match("[%c%%\t\r\n><*|]") then
+        if name:match("[%c\"\t\r\n><*|]") then
             error("Output file has an invalid name:", file_name)
         end
 

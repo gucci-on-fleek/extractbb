@@ -98,11 +98,30 @@ function target_list.doc.func()
     return 0
 end
 
+-- We use some questionable characters in the test files, so we need to override
+-- the builtin functions
+function ren(dir, source, dest)
+    dir = dir .. "/"
+    return os.rename(dir .. source, dir .. dest)
+end
+
+function normalize_path(path)
+    out = ""
+    for str in path:gmatch("([^ ]+)") do
+        if str == ">" then
+            out = out .. str
+        else
+            out = out .. "'" .. str .. "' "
+        end
+    end
+    return out
+end
+
 -- Tests
 target_list.check = orig_targets.check
 target_list.save = orig_targets.save
 
-os.setenv("diffexe", "git diff --no-index -w --word-diff --text")
+os_diffexe = "git diff --no-index -w --word-diff --text"
 
 testfiledir = "./tests/"
 tdsdirs = { ["./texmf"] = "." }
@@ -152,8 +171,8 @@ function runtest(name, engine, _, ext, _, is_expectation)
     local code = os.spawn(
         {
             "sh", "-c",
-            script_path .. extractbb_flags .. in_file ..
-            " > " .. out_file,
+            script_path .. extractbb_flags .. "'" .. in_file .. "'" ..
+            " > '" .. out_file .. "'",
         },
         os.env
     )
