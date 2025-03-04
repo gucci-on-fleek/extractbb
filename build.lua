@@ -167,6 +167,9 @@ function runtest(name, engine, _, ext, _, is_expectation)
     os.env["TZ"] = "UTC"
     os.env["TEXINPUTS"] = "./texmf//"
     os.env["LUAINPUTS"] = "./texmf//"
+    os.env["LC_CTYPE"] = "C.utf8"
+    os.env["LC_COLLATE"] = "C.utf8"
+    os.env["LC_NUMERIC"] = "C.utf8"
 
     local code = os.spawn(
         {

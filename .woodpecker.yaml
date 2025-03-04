@@ -13,11 +13,9 @@ steps:
     commands:
       - set -euo pipefail
       - export TEXMFHOME=$(realpath ./texmf)
-      - l3build check --dirty --show-log-on-error --engine=ebb &
-      - l3build check --dirty --show-log-on-error --engine=xbb &
-      - l3build check --dirty --show-log-on-error --engine=wine_ebb &
-      - l3build check --dirty --show-log-on-error --engine=wine_xbb &
       - l3build doc &
+      - >
+        parallel --will-cite l3build check --dirty --show-log-on-error --engine='{}' ::: ebb xbb wine_ebb wine_xbb
       - wait
       - l3build bundle
 
