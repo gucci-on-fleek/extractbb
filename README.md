@@ -20,9 +20,7 @@ preference):
 1. By [opening a new issue on
    GitHub](https://github.com/gucci-on-fleek/extractbb/issues/new).
 
-2. Via email to the public [`tex-live@tug.org` mailing list](https://tug.org/mailman/listinfo/tex-live).
-
-3. By contacting the author directly at `tex@maxchernoff.ca`.
+2. By contacting the author directly at `tex@maxchernoff.ca`.
 
 
 Building
